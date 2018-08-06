@@ -13,12 +13,12 @@ local typeorder={
 
 --EDIT THESE VALUES
 local targetSaveHour=0
-local targetSaveMinute=57
+local targetSaveMinute=0
 local targetSaveSecond=0
-local targetsixtiethSecond=1
-local targetJirachiSeed=0xF500
-local savedelaySecond=1
-local savedelayFrame=47
+local targetsixtiethSecond=0
+local targetJirachiSeed=0x0000
+local savedelaySecond=0
+local savedelayFrame=0
 
 --DON'T EDIT ANYTHING BEYOND HERE
 local time=0x2F64EB3
@@ -37,10 +37,26 @@ if targetSaveSecond<savedelaySecond then
      realSaveSecond = 60 + targetSaveSecond - savedelaySecond
 end
 
+if targetsixtiethSecond<savedelayFrame and targetSaveSecond>=savedelaySecond then
+	realSaveSecond = realSaveSecond - 1
+end
+
 if targetsixtiethSecond<savedelayFrame then
      realSaveSecond = realSaveSecond - 1
      realSaveFrame = 60 + targetsixtiethSecond - savedelayFrame
 end
+
+if realSaveSecond<1 then
+	realSaveSecond = targetSaveSecond - savedelaySecond
+	realSaveHour = targetSaveHour
+	realSaveMinute = targetSaveMinute
+end
+
+if realSaveFrame<1 then
+	realSaveFrame = targetsixtiethSecond - savedelayFrame
+end
+
+realSaveSecond = realSaveSecond - 1
 
 while true do
     tid=memory.readwordunsigned(0x2024EAE)
